@@ -27,10 +27,12 @@ ActiveRecord::Schema.define(:version => 20100413172313) do
     t.decimal  "amount",        :precision => 8, :scale => 2, :null => false
     t.integer  "currency_id",                                 :null => false
     t.string   "description",                                 :null => false
-    t.string   "email_address",                               :null => false
+    t.string   "email_address"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "payments", ["currency_id"], :name => "index_payments_on_currency_id"
 
   create_table "people", :force => true do |t|
     t.string   "first_names",   :null => false

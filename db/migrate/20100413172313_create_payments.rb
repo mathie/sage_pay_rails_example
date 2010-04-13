@@ -4,13 +4,16 @@ class CreatePayments < ActiveRecord::Migration
       t.decimal    :amount,        :null => false, :scale => 2, :precision => 8
       t.references :currency,      :null => false
       t.string     :description,   :null => false, :length => 100
-      t.string     :email_address, :null => false
+      t.string     :email_address
 
       t.timestamps
     end
+
+    add_index :payments, :currency_id
   end
 
   def self.down
+    remove_index :payments, :currency_id
     drop_table :payments
   end
 end
