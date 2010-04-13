@@ -1,8 +1,35 @@
-!!! 5
-%html{ :xmlns => "http://www.w3.org/1999/xhtml", "xml:lang" => "en", :lang => "en" }
+!!!5
+%html{ :lang => "en-gb", :xmlns => "http://www.w3.org/1999/xhtml", "xml:lang" => "en-gb" }
   %head
+    %meta{ :content => "text/html; charset=utf-8", "http-equiv" => "Content-Type" }
     %title
-      SagePay Rails example app
-    = stylesheet_link_tag 'application', 'formtastic', 'formtastic_changes'
+      SagePay Rails Example
+
+    = stylesheet_link_tag 'screen', :media => 'screen, projection'
+    = stylesheet_link_tag 'print', :media => 'print'
+    /[if IE]
+      = stylesheet_link_tag 'ie', :media => 'screen, projection'
   %body
-    = yield
+    #container
+      #header
+        #title
+          %h1= link_to "SagePay Rails Example", root_path
+
+        %ul#navigation
+          %li.first= link_to 'Home', root_path
+
+        %hr
+      #content
+        #flash
+          - flash.each do |severity, message|
+            %p{:class => severity}= message
+
+        = yield
+
+      #sidebar
+        = content_for(:sidebar)
+
+      #footer
+        %hr
+        %p
+          Web app produced by the lovely people at #{link_to "Rubaidh Ltd.", "http://rubaidh.com/"}.

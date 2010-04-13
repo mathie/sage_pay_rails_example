@@ -1,0 +1,14 @@
+// Override anything that needs fixing in various versions of Internet Explorer.
+
+// We're using Blueprint as the basis of our styles
+@import blueprint/ie
+
+// Suggested by formtastic for IE<8
+form
+  .formtastic
+    fieldset
+      ol
+        li
+          fieldset
+            legend
+              margin-left: -6px
