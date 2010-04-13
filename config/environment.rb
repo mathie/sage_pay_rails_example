@@ -14,6 +14,7 @@ Rails::Initializer.run do |config|
   config.gem 'inherited_resources', :version => '~>1.0.6' # The 1.0.x branch is the last with Rails 2.3.x support.
   config.gem 'haml'
   config.gem 'formtastic'
+  config.gem 'compass'
   config.gem 'show_for', :version => '~>0.1.3'
 
   # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
