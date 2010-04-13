@@ -41,3 +41,12 @@ Factory.define(:currency) do |currency|
   currency.iso_code { Factory.next_string(:iso_code) }
   currency.symbol   { Factory.next_string(:symbol)   }
 end
+
+# Payments
+Factory.define(:payment) do |payment|
+  payment.description   "Factory-generated payment description"
+  payment.email_address "demo@example.com"
+  payment.amount        15.99
+
+  payment.association(:currency)
+end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100413150454) do
+ActiveRecord::Schema.define(:version => 20100413172313) do
 
   create_table "currencies", :force => true do |t|
     t.string   "name",       :null => false
@@ -22,6 +22,15 @@ ActiveRecord::Schema.define(:version => 20100413150454) do
   add_index "currencies", ["iso_code"], :name => "index_currencies_on_iso_code", :unique => true
   add_index "currencies", ["name"], :name => "index_currencies_on_name", :unique => true
   add_index "currencies", ["symbol"], :name => "index_currencies_on_symbol", :unique => true
+
+  create_table "payments", :force => true do |t|
+    t.decimal  "amount",        :precision => 8, :scale => 2, :null => false
+    t.integer  "currency_id",                                 :null => false
+    t.string   "description",                                 :null => false
+    t.string   "email_address",                               :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "people", :force => true do |t|
     t.string   "first_names",   :null => false
