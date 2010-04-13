@@ -1,1 +1,5 @@
-sage_pay --version 0.2.0
+sage_pay            --version 0.2.0
+inherited_resources --version 1.0.6
+haml
+formtastic
+show_for            --version 0.1.3
