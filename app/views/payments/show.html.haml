@@ -17,6 +17,7 @@
       %p Same as the billing address
 
 %ul
+  %li= link_to 'Make payment', payment_sage_pay_transaction_path(resource), :method => :post
   %li= link_to 'edit details', edit_resource_path
   %li= link_to 'all payments', collection_path
   %li= link_to 'delete', resource_path, :method => :delete

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100414090605) do
+ActiveRecord::Schema.define(:version => 20100414161332) do
 
   create_table "addresses", :force => true do |t|
     t.string   "first_names", :null => false
@@ -59,5 +59,17 @@ ActiveRecord::Schema.define(:version => 20100414090605) do
   end
 
   add_index "payments", ["currency_id"], :name => "index_payments_on_currency_id"
+
+  create_table "sage_pay_transactions", :force => true do |t|
+    t.string   "vendor_tx_code", :null => false
+    t.string   "vendor",         :null => false
+    t.string   "vps_tx_id",      :null => false
+    t.string   "security_key",   :null => false
+    t.integer  "payment_id",     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sage_pay_transactions", ["payment_id"], :name => "index_sage_pay_transactions_on_payment_id"
 
 end

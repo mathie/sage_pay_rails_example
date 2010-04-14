@@ -15,4 +15,18 @@ class Address < ActiveRecord::Base
   def full_name
     [first_names, surname].compact.join(" ")
   end
+
+  def to_sage_pay_address
+    SagePay::Server::Address.new(
+      :first_names => first_names,
+      :surname     => surname,
+      :address_1   => address_1,
+      :address_2   => address_2,
+      :city        => city,
+      :post_code   => post_code,
+      :state       => state,
+      :phone       => phone,
+      :country     => country.iso_code
+    )
+  end
 end
