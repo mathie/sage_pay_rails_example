@@ -1,0 +1,7 @@
+- semantic_form_for resource do |form|
+  - form.inputs do
+    = form.input :description
+    = form.input :amount
+    = form.input :currency, :include_blank => false
+  - form.buttons do
+    = form.commit_button

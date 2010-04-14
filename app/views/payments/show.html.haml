@@ -1,0 +1,13 @@
+%h1=h resource.description
+
+- show_for resource do |r|
+  = r.attribute :description
+  - r.attribute :amount do
+    = formatted_amount(resource)
+  = r.attribute :created_at, :format => :long
+  = r.attribute :updated_at, :format => :long
+
+%ul
+  %li= link_to 'edit details', edit_resource_path
+  %li= link_to 'all currencies', collection_path
+  %li= link_to 'delete', resource_path, :method => :delete

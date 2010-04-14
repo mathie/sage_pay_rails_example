@@ -1,0 +1,4 @@
+- content_tag :tr, payment do
+  %td= link_to h(payment.description), payment
+  %td=h payment.created_at.to_s(:long)
+  %td=h formatted_amount(payment)
