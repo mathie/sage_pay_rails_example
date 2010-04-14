@@ -5,13 +5,13 @@
     = form.input :currency, :include_blank => false
 
   %h2 Billing address
-  = render :partial => 'addresses/fields', :locals => { :form => form, :address => resource.billing_address, :address_type => :billing_address }
+  = render :partial => 'addresses/fields', :locals => { :form => form, :address => (resource.billing_address || resource.build_billing_address), :address_type => :billing_address }
 
   %h2 Delivery address
 
   %p Leave the delivery address blank if it's the same as the billing address.
 
-  = render :partial => 'addresses/fields', :locals => { :form => form, :address => resource.delivery_address, :address_type => :delivery_address }
+  = render :partial => 'addresses/fields', :locals => { :form => form, :address => (resource.delivery_address || resource.build_delivery_address), :address_type => :delivery_address }
 
   - form.buttons do
     = form.commit_button
