@@ -1,4 +1,4 @@
-- content_tag :tr, resource do
-  %td= link_to h(resource.name), resource
-  %td=h resource.iso_code
-  %td=h resource.symbol
+- content_tag :tr, currency do
+  %td= link_to h(currency.name), currency
+  %td=h currency.iso_code
+  %td=h currency.symbol
