@@ -4,6 +4,8 @@
   = r.attribute :name
   = r.attribute :iso_code
   = r.attribute :symbol
+  = r.attribute :created_at, :format => :long
+  = r.attribute :updated_at, :format => :long
 
 %ul
   %li= link_to 'edit details', edit_resource_path
