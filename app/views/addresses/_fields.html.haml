@@ -1,0 +1,11 @@
+- form.fields_for address_type, address do |address_form|
+  - address_form.inputs do
+    = address_form.input :first_names
+    = address_form.input :surname
+    = address_form.input :address_1
+    = address_form.input :address_2
+    = address_form.input :city
+    = address_form.input :post_code
+    = address_form.input :country, :required => true
+    = address_form.input :state, :hint => "Two-letter US State (US only)"
+    = address_form.input :phone
