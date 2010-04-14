@@ -7,6 +7,15 @@
   = r.attribute :created_at, :format => :long
   = r.attribute :updated_at, :format => :long
 
+  - r.association :billing_address do
+    = formatted_address(resource.billing_address)
+
+  - r.association :delivery_address do
+    - if resource.delivery_address.present?
+      = formatted_address(resource.delivery_address)
+    - else
+      %p Same as the billing address
+
 %ul
   %li= link_to 'edit details', edit_resource_path
   %li= link_to 'all payments', collection_path

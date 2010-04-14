@@ -11,4 +11,8 @@ class Address < ActiveRecord::Base
   validates_length_of :post_code,   :maximum =>  10, :allow_blank => true
   validates_length_of :state,       :maximum =>   2, :allow_blank => true
   validates_length_of :phone,       :maximum =>  20, :allow_blank => true
+
+  def full_name
+    [first_names, surname].compact.join(" ")
+  end
 end
