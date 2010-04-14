@@ -21,7 +21,6 @@ ActiveRecord::Schema.define(:version => 20100414090605) do
     t.integer  "country_id",  :null => false
     t.string   "state"
     t.string   "phone"
-    t.integer  "payment_id",  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -49,22 +48,16 @@ ActiveRecord::Schema.define(:version => 20100414090605) do
   add_index "currencies", ["symbol"], :name => "index_currencies_on_symbol", :unique => true
 
   create_table "payments", :force => true do |t|
-    t.decimal  "amount",        :precision => 8, :scale => 2, :null => false
-    t.integer  "currency_id",                                 :null => false
-    t.string   "description",                                 :null => false
+    t.decimal  "amount",              :precision => 8, :scale => 2, :null => false
+    t.integer  "currency_id",                                       :null => false
+    t.string   "description",                                       :null => false
     t.string   "email_address"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "billing_address_id",                                :null => false
+    t.integer  "delivery_address_id"
   end
 
   add_index "payments", ["currency_id"], :name => "index_payments_on_currency_id"
-
-  create_table "people", :force => true do |t|
-    t.string   "first_names",   :null => false
-    t.string   "surname",       :null => false
-    t.string   "email_address", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
 end

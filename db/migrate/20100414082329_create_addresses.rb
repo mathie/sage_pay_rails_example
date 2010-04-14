@@ -10,13 +10,21 @@ class CreateAddresses < ActiveRecord::Migration
       t.references  :country,     :null => false
       t.string      :state
       t.string      :phone
-      t.references  :payment,     :null => false
-      
+
       t.timestamps
+    end
+
+    change_table :payments do |t|
+      t.references :billing_address, :null => false
+      t.references :delivery_address
     end
   end
 
   def self.down
+    change_table :payments do |t|
+      t.remove :billing_address
+      t.remove :delivery_address
+    end
     drop_table :addresses
   end
 end
