@@ -31,7 +31,6 @@ class Factory
 end
 
 # Currencies
-
 Factory.string_sequence(:name, "Sealand Pongos") { |prev| prev.succ }
 Factory.string_sequence(:iso_code, "ABC")        { |prev| prev.succ }
 Factory.string_sequence(:symbol, "!")            { |prev| prev.succ }
@@ -40,6 +39,15 @@ Factory.define(:currency) do |currency|
   currency.name     { Factory.next_string(:name)     }
   currency.iso_code { Factory.next_string(:iso_code) }
   currency.symbol   { Factory.next_string(:symbol)   }
+end
+
+# Countries. Not quite right, but I'm stealing the name #string_sequence from
+# the currency.
+Factory.string_sequence(:iso_country_code, "AB") { |prev| prev.succ }
+
+Factory.define(:country) do |country|
+  country.name     { Factory.next_string(:name)             }
+  country.iso_code { Factory.next_string(:iso_country_code) }
 end
 
 # Payments

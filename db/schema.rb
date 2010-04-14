@@ -9,7 +9,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100413172313) do
+ActiveRecord::Schema.define(:version => 20100414090605) do
+
+  create_table "countries", :force => true do |t|
+    t.string   "name",       :null => false
+    t.string   "iso_code",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "countries", ["iso_code"], :name => "index_countries_on_iso_code", :unique => true
+  add_index "countries", ["name"], :name => "index_countries_on_name", :unique => true
 
   create_table "currencies", :force => true do |t|
     t.string   "name",       :null => false
