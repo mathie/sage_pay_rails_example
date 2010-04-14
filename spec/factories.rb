@@ -59,7 +59,6 @@ Factory.define(:address) do |address|
   address.post_code   "AB12 6TB"
 
   address.association(:country)
-  address.association(:payment)
 end
 
 # Payments
@@ -69,4 +68,5 @@ Factory.define(:payment) do |payment|
   payment.amount        15.99
 
   payment.association(:currency)
+  payment.association(:billing_address, :factory => :address)
 end

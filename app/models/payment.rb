@@ -1,5 +1,10 @@
 class Payment < ActiveRecord::Base
   belongs_to :currency
+  belongs_to :billing_address, :class_name => "Address"
+  belongs_to :delivery_address, :class_name => "Address"
+
+  accepts_nested_attributes_for :billing_address
+  accepts_nested_attributes_for :delivery_address, :reject_if => lambda { |attributes| attributes.all? { |k, v| v.blank? } }
 
   validates_presence_of :description, :currency_id, :amount
   validates_length_of :description, :maximum => 100, :allow_blank => true
