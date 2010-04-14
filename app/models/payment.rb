@@ -1,7 +1,7 @@
 class Payment < ActiveRecord::Base
   belongs_to :currency
-  belongs_to :billing_address, :class_name => "Address"
-  belongs_to :delivery_address, :class_name => "Address"
+  belongs_to :billing_address,  :class_name => "Address", :dependent => :destroy
+  belongs_to :delivery_address, :class_name => "Address", :dependent => :destroy
 
   accepts_nested_attributes_for :billing_address
   accepts_nested_attributes_for :delivery_address, :reject_if => lambda { |attributes| attributes.all? { |k, v| v.blank? } }
