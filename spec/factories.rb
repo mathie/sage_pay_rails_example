@@ -50,6 +50,18 @@ Factory.define(:country) do |country|
   country.iso_code { Factory.next_string(:iso_country_code) }
 end
 
+Factory.define(:address) do |address|
+  # Address details courtesy of Faker
+  address.first_names "Jaclyn"
+  address.surname     "Kerluke"
+  address.address_1   "798 Major Fort"
+  address.city        "Falkirk"
+  address.post_code   "AB12 6TB"
+
+  address.association(:country)
+  address.association(:payment)
+end
+
 # Payments
 Factory.define(:payment) do |payment|
   payment.description   "Factory-generated payment description"

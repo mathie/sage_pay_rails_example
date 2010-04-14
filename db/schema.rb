@@ -11,6 +11,21 @@
 
 ActiveRecord::Schema.define(:version => 20100414090605) do
 
+  create_table "addresses", :force => true do |t|
+    t.string   "first_names", :null => false
+    t.string   "surname",     :null => false
+    t.string   "address_1",   :null => false
+    t.string   "address_2"
+    t.string   "city",        :null => false
+    t.string   "post_code",   :null => false
+    t.integer  "country_id",  :null => false
+    t.string   "state"
+    t.string   "phone"
+    t.integer  "payment_id",  :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "countries", :force => true do |t|
     t.string   "name",       :null => false
     t.string   "iso_code",   :null => false
