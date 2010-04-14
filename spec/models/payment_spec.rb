@@ -7,38 +7,15 @@ describe Payment do
     }.should_not raise_error
   end
 
-  describe "on #description" do
-    it "should validate its presence" do
-      payment = Factory.build(:payment, :description => "")
-      payment.should_not be_valid
-      payment.should have(1).error_on(:description)
-    end
+  it { should validate_presence_of :description                  }
+  it { should validate_length_of   :description, :maximum => 100 }
 
-    it "should validate the length being <= 100 characters" do
-      payment = Factory.build(:payment, :description => "f" * 100)
-      payment.should be_valid
+  it { should validate_presence_of :currency }
 
-      payment = Factory.build(:payment, :description => "f" * 101)
-      payment.should_not be_valid
-      payment.should have(1).error_on(:description)
-    end
-  end
+  it { should validate_presence_of :amount }
 
-  describe "on #currency (and #currency_id)" do
-    it "should validate its presence" do
-      payment = Factory.build(:payment, :currency => nil)
-      payment.should_not be_valid
-      payment.should have(1).error_on(:currency_id)
-    end
-  end
 
   describe "on #amount" do
-    it "should validate its presence" do
-      payment = Factory.build(:payment, :amount => "")
-      payment.should_not be_valid
-      payment.should have(1).error_on(:amount)
-    end
-
     it "should validate that it's a number" do
       payment = Factory.build(:payment, :amount => "chickens")
       payment.should_not be_valid
