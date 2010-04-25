@@ -58,4 +58,8 @@ class Payment < ActiveRecord::Base
   def in_progress?
     sage_pay_transaction.present? && !sage_pay_transaction.complete?
   end
+
+  def transaction_code
+    sage_pay_transaction.present? ? sage_pay_transaction.our_transaction_code : nil
+  end
 end
