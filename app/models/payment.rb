@@ -43,6 +43,7 @@ class Payment < ActiveRecord::Base
     self.response = sage_pay_registration.register!
     if response.ok?
       create_sage_pay_transaction(
+        :transaction_type      => sage_pay_registration.tx_type,
         :vendor                => sage_pay_registration.vendor,
         :our_transaction_code  => sage_pay_registration.vendor_tx_code,
         :security_key          => response.security_key,
@@ -57,6 +58,10 @@ class Payment < ActiveRecord::Base
 
   def complete?
     sage_pay_transaction.present? && sage_pay_transaction.success?
+  end
+
+  def authenticated?
+    sage_pay_transaction.present? && sage_pay_transaction.authenticated?
   end
 
   def failed?

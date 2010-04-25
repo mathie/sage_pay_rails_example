@@ -40,6 +40,8 @@
     %li Payment in progress...
   - elsif resource.complete?
     %li Payment successfully completed.
+  - elsif resource.authenticated?
+    %li Payment successfully authenticated
   - else
     %li= link_to 'Make payment now', payment_sage_pay_transaction_path(resource, :tx_type => "payment"), :method => :post
     %li= link_to 'Defer payment', payment_sage_pay_transaction_path(resource, :tx_type => "deferred"), :method => :post

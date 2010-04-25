@@ -3,7 +3,7 @@ class SagePayTransaction < ActiveRecord::Base
 
   belongs_to :payment
 
-  validates_presence_of :vendor, :security_key, :payment_id, :our_transaction_code, :sage_transaction_code
+  validates_presence_of :vendor, :security_key, :tx_type, :payment_id, :our_transaction_code, :sage_transaction_code
 
   validates_presence_of :authorisation_code, :card_type, :last_4_digits, :if => :success?
 
@@ -46,6 +46,14 @@ class SagePayTransaction < ActiveRecord::Base
 
   def success?
     status.present? && status == "ok"
+  end
+
+  def deferred?
+    success? && tx_type == "deferred"
+  end
+
+  def authenticated?
+    status.present? && ["authenticated", "registered"].include?(status)
   end
 
   def complete?
