@@ -53,7 +53,7 @@
       Card authenticated.
       %ul
         %li= link_to "Re-authorise card", "#"
-        %li= link_to "Repeat transaction", "#"
+        %li= link_to "Repeat transaction", repeat_payment_path(resource)
     - elsif resource.failed?
       Payment failed.
   - else
