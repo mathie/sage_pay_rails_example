@@ -69,14 +69,7 @@ class Payment < ActiveRecord::Base
 
        self.response = sage_pay_release.run!
        if response.ok?
-         build_sage_pay_transaction(
-           :transaction_type      => sage_pay_registration.tx_type.to_s,
-           :vendor                => sage_pay_registration.vendor,
-           :our_transaction_code  => sage_pay_registration.vendor_tx_code,
-           :security_key          => response.security_key,
-           :sage_transaction_code => response.vps_tx_id
-         )
-         sage_pay_transaction.save
+         sage_pay_transaction.update_attributes(:status => "released")
        else
          false
        end
@@ -97,6 +90,10 @@ class Payment < ActiveRecord::Base
 
   def deferred?
     complete? && sage_pay_transaction.deferred?
+  end
+
+  def released?
+    complete? && sage_pay_transaction.released?
   end
 
   def authenticated?
