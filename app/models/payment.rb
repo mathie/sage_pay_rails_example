@@ -70,7 +70,8 @@ class Payment < ActiveRecord::Base
       self.response = sage_pay_release.run!
       if response.ok?
         sage_pay_transactions.create!(
-          :status => "released"
+          :status           => "released"
+          :transaction_type => sage_pay_release.tx_type.to_s,
         )
       else
         false
@@ -90,7 +91,8 @@ class Payment < ActiveRecord::Base
       self.response = sage_pay_abort.run!
       if response.ok?
         sage_pay_transactions.create!(
-          :status => "aborted"
+          :status           => "aborted"
+          :transaction_type => sage_pay_abort.tx_type.to_s,
         )
       else
         false
@@ -111,6 +113,7 @@ class Payment < ActiveRecord::Base
       if response.ok?
         sage_pay_transactions.create!(
           :status                => "refunded",
+          :transaction_type      => sage_pay_refund.tx_type.to_s,
           :authorisation_code    => response.tx_auth_no,
           :sage_transaction_code => response.vps_tx_id
         )
@@ -131,11 +134,12 @@ class Payment < ActiveRecord::Base
       self.response = sage_pay_authorise.run!
       if response.ok?
         sage_pay_transactions.create!(
-          :status => "authorised",
+          :status                => "authorised",
+          :transaction_type      => sage_pay_authorise.tx_type.to_s,
+          :our_transaction_code  => sage_pay_authorise.vendor_tx_code,
           :sage_transaction_code => response.vps_tx_id,
           :authorisation_code    => response.tx_auth_no,
-          :security_key          => response.security_key,
-          :our_transaction_code  => sage_pay_authorise.vendor_tx_code
+          :security_key          => response.security_key
         )
       else
         false
@@ -156,6 +160,7 @@ class Payment < ActiveRecord::Base
       if response.ok?
         sage_pay_transactions.create!(
           :status                => "repeated",
+          :transaction_type      => sage_pay_repeat.tx_type.to_s,
           :our_transaction_code  => sage_pay_repeat.vendor_tx_code,
           :sage_transaction_code => response.vps_tx_id,
           :authorisation_code    => response.tx_auth_no,
