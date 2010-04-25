@@ -1,4 +1,6 @@
 class Payment < ActiveRecord::Base
+  attr_accessor :response
+
   belongs_to :currency
   belongs_to :billing_address,  :class_name => "Address", :dependent => :destroy
   belongs_to :delivery_address, :class_name => "Address", :dependent => :destroy
@@ -16,7 +18,7 @@ class Payment < ActiveRecord::Base
       raise RuntimeError, "Sage Pay transaction has already been registered for this payment!"
     end
 
-    response = sage_pay_payment.register!
+    self.response = sage_pay_payment.register!
     if response.ok?
       svd = sage_pay_payment.signature_verification_details
       create_sage_pay_transaction(
