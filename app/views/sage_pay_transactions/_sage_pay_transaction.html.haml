@@ -1,8 +1,8 @@
 - content_tag :tr, sage_pay_transaction do
-  = sage_pay_transaction.our_transaction_code
-  = sage_pay_transaction.sage_transaction_code
-  = sage_pay_transaction.status
-  = sage_pay_transaction.transaction_type
-  = sage_pay_transaction.authorisation_code
-  = sage_pay_transaction.card_type
-  = sage_pay_transaction.last_4_digits
+  %td= sage_pay_transaction.our_transaction_code
+  %td= sage_pay_transaction.sage_transaction_code
+  %td= sage_pay_transaction.status
+  %td= sage_pay_transaction.transaction_type
+  %td= sage_pay_transaction.authorisation_code
+  %td= sage_pay_transaction.card_type
+  %td= sage_pay_transaction.last_4_digits
