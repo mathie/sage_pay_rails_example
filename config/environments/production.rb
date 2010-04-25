@@ -26,3 +26,9 @@ config.action_view.cache_template_loading            = true
 
 # Enable threaded mode
 # config.threadsafe!
+
+# Since we're on heroku in production, we need to cope with
+# being on a read only file system, something SASS doesn't
+# get on too well with... Still, not a hassle.
+config.gem 'hassle'
+config.middleware.use "Hassle"
