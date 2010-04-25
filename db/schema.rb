@@ -61,11 +61,9 @@ ActiveRecord::Schema.define(:version => 20100414161332) do
   add_index "payments", ["currency_id"], :name => "index_payments_on_currency_id"
 
   create_table "sage_pay_transactions", :force => true do |t|
-    t.string   "vendor_tx_code", :null => false
-    t.string   "vendor",         :null => false
-    t.string   "vps_tx_id",      :null => false
-    t.string   "security_key",   :null => false
-    t.integer  "payment_id",     :null => false
+    t.string   "vendor",       :null => false
+    t.string   "security_key", :null => false
+    t.integer  "payment_id",   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -10,9 +10,7 @@ describe SagePayTransaction do
   end
 
   describe "validations" do
-    it { should validate_presence_of(:vendor_tx_code) }
     it { should validate_presence_of(:vendor)         }
-    it { should validate_presence_of(:vps_tx_id)      }
     it { should validate_presence_of(:security_key)   }
     it { should validate_presence_of(:payment)        }
   end

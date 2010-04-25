@@ -72,10 +72,8 @@ Factory.define(:payment) do |payment|
 end
 
 Factory.define(:sage_pay_transaction) do |sage_pay_transaction|
-  sage_pay_transaction.vps_tx_id      "random"
   sage_pay_transaction.security_key   "random"
   sage_pay_transaction.vendor         "random"
-  sage_pay_transaction.vendor_tx_code "random"
 
   sage_pay_transaction.association(:payment)
 end
