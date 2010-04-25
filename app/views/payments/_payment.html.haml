@@ -9,7 +9,7 @@
         Complete, authorisation code #{payment.sage_pay_transaction.authorisation_code}.
         = link_to 'Refund', refund_payment_path(payment), :method => :put
       - elsif payment.authenticated?
-        Authenticated. #{link_to "Repeat transaction", repeat_payment_path(resource)}
+        Authenticated. #{link_to "Repeat transaction", repeat_payment_path(resource), :method => :put}
       - elsif payment.deferred?
         Deferred, authorisation code #{payment.sage_pay_transaction.authorisation_code}
         = link_to 'Release', release_payment_path(payment), :method => :put
