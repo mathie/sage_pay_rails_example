@@ -118,12 +118,37 @@ class Payment < ActiveRecord::Base
     end
   end
 
-  def repeat
+  def authorise
     if authenticated?
+      sage_pay_authorise = SagePay::Server.authorise(
+        :amount              => amount,
+        :description         => "Authorise: #{description}",
+        :related_transaction => sage_pay_transaction.to_related_transaction
+      )
+
+      # FIXME: We should be creating a separate sage_pay_transaction for the repeat transaction authorisation
+      # (and for every interaction with SagePay, come to think of it).
+      self.response = sage_pay_authorise.run!
+      if response.ok?
+        sage_pay_transaction.update_attributes(
+          :status => "authorised",
+          :sage_transaction_code => response.vps_tx_id,
+          :authorisation_code    => response.tx_auth_no,
+          :security_key          => response.security_key,
+          :our_transaction_code  => sage_pay_authorise.our_transaction_code,
+        )
+      else
+        false
+      end
+    end
+  end
+
+  def repeat
+    if authorised?
       sage_pay_repeat = SagePay::Server.repeat(
         :amount              => amount,
         :currency            => currency.iso_code,
-        :description         => "Refund: #{description}",
+        :description         => "Repeat: #{description}",
         :related_transaction => sage_pay_transaction.to_related_transaction
       )
 
@@ -164,6 +189,10 @@ class Payment < ActiveRecord::Base
 
   def authenticated?
     complete? && sage_pay_transaction.authenticated?
+  end
+
+  def authorised?
+    complete? && sage_pay_transaction.authorised?
   end
 
   def failed?

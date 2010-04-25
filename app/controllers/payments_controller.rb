@@ -35,4 +35,13 @@ class PaymentsController < InheritedResources::Base
     end
     redirect_to resource
   end
+
+  def authorise
+    if resource.authorise
+      flash[:notice] = "Payment successfully authorised."
+    else
+      flash[:error] = "Payment failed to authorise: #{resource.response.status} - #{resource.response.status_detail}"
+    end
+    redirect_to resource
+  end
 end
