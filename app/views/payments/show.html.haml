@@ -16,23 +16,24 @@
     - else
       %p Same as the billing address
 
-- if resource.sage_pay_transaction.present?
+- content_for(:sidebar) do
+  - if resource.sage_pay_transaction.present?
 
-  %h2 Sage Pay Transaction details
+    %h2 Transaction details
 
-  - show_for resource.sage_pay_transaction do |s|
-    = s.attribute :our_transaction_code
-    = s.attribute :sage_transaction_code
-    = s.attribute :status
-    = s.attribute :authorisation_code
-    = s.attribute :avs_cv2_matched?
-    = s.attribute :address_matched?
-    = s.attribute :post_code_matched?
-    = s.attribute :cv2_matched?
-    = s.attribute :gift_aid?
-    = s.attribute :threed_secure_ok?
-    = s.attribute :card_type
-    = s.attribute :last_4_digits
+    - show_for resource.sage_pay_transaction do |s|
+      = s.attribute :our_transaction_code
+      = s.attribute :sage_transaction_code
+      = s.attribute :status
+      = s.attribute :authorisation_code
+      = s.attribute :avs_cv2_matched?
+      = s.attribute :address_matched?
+      = s.attribute :post_code_matched?
+      = s.attribute :cv2_matched?
+      = s.attribute :gift_aid?
+      = s.attribute :threed_secure_ok?
+      = s.attribute :card_type
+      = s.attribute :last_4_digits
 
 %ul
   - if resource.in_progress?
