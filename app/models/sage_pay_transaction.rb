@@ -5,6 +5,8 @@ class SagePayTransaction < ActiveRecord::Base
 
   validates_presence_of :vendor, :security_key, :payment_id, :our_transaction_code, :sage_transaction_code
 
+  validates_presence_of :authorisation_code, :avs_cv2_matched, :address_matched, :post_code_matched, :cv2_matched, :gift_aid, :threed_secure_ok, :card_type, :last_4_digits, :if => :success?
+
   def self.record_notification_from_params(params)
     sage_pay_transaction = nil
     notification = SagePay::Server::TransactionNotification.from_params(params) do |attributes|
@@ -24,22 +26,26 @@ class SagePayTransaction < ActiveRecord::Base
   def update_attributes_from_notification!(notification)
     self.notification = notification
 
-    update_attributes!(
-      :status             => notification.status.to_s,
-      :authorisation_code => notification.tx_auth_no,
-      :avs_cv2_matched    => notification.avs_cv2_matched?,
-      :address_matched    => notification.address_matched?,
-      :post_code_matched  => notification.post_code_matched?,
-      :cv2_matched        => notification.cv2_matched?,
-      :gift_aid           => notification.gift_aid,
-      :threed_secure_ok   => notification.threed_secure_status_ok?,
-      :card_type          => notification.card_type.to_s.humanize,
-      :last_4_digits      => notification.last_4_digits
-    )
+    if notification.valid_signature?
+      update_attributes!(
+        :status             => notification.status.to_s,
+        :authorisation_code => notification.tx_auth_no,
+        :avs_cv2_matched    => notification.avs_cv2_matched?,
+        :address_matched    => notification.address_matched?,
+        :post_code_matched  => notification.post_code_matched?,
+        :cv2_matched        => notification.cv2_matched?,
+        :gift_aid           => notification.gift_aid,
+        :threed_secure_ok   => notification.threed_secure_status_ok?,
+        :card_type          => notification.card_type.to_s.humanize,
+        :last_4_digits      => notification.last_4_digits
+      )
+    else
+      update_attributes!(:status => "tampered")
+    end
   end
 
   def success?
-    status == "ok"
+    status.present? && status == "ok"
   end
 
   def complete?
