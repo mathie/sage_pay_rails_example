@@ -1,4 +1,6 @@
 class SagePayTransaction < ActiveRecord::Base
+  attr_accessor :notification
+
   belongs_to :payment
 
   validates_presence_of :vendor, :security_key, :payment_id, :our_transaction_code, :sage_transaction_code
@@ -15,9 +17,15 @@ class SagePayTransaction < ActiveRecord::Base
     sage_pay_transaction
   end
 
+  def response(redirect_url)
+    notification.response(redirect_url) if notification.present?
+  end
+
   def update_attributes_from_notification!(notification)
+    self.notification = notification
+
     update_attributes!(
-      :status             => notification.status,
+      :status             => notification.status.to_s,
       :authorisation_code => notification.tx_auth_no,
       :avs_cv2_matched    => notification.avs_cv2_matched?,
       :address_matched    => notification.address_matched?,
