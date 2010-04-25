@@ -37,6 +37,8 @@
 %ul
   - if resource.in_progress?
     %li Payment in progress...
+  - elsif resource.complete?
+    %li Payment successfully completed.
   - else
     %li= link_to 'Make payment', payment_sage_pay_transaction_path(resource), :method => :post
     %li= link_to 'edit details', edit_resource_path
