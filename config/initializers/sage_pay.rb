@@ -16,4 +16,4 @@ SagePay::Server.default_registration_options[:notification_url] = "https://sage-
 # example application.
 SagePay::Server.default_registration_options[:mode] = :simulator
 
-UUID.state_file = File.join(Rails.root, 'tmp', 'cache', 'ruby-uuid')
+UUID.state_file = File.join(Rails.root, 'tmp', 'ruby-uuid')
