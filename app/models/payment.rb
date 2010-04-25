@@ -5,7 +5,7 @@ class Payment < ActiveRecord::Base
   belongs_to :billing_address,  :class_name => "Address", :dependent => :destroy
   belongs_to :delivery_address, :class_name => "Address", :dependent => :destroy
   has_many :sage_pay_transactions, :dependent => :destroy
-  has_one :latest_sage_pay_transaction, :class_name => "SagePayTransaction", :order => "created_at DESC"
+  has_one :latest_sage_pay_transaction, :class_name => "SagePayTransaction", :order => "created_at ASC"
 
   accepts_nested_attributes_for :billing_address
   accepts_nested_attributes_for :delivery_address, :reject_if => lambda { |attributes| attributes.all? { |k, v| v.blank? } }
