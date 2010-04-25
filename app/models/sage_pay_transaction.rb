@@ -53,15 +53,15 @@ class SagePayTransaction < ActiveRecord::Base
   end
 
   def paid?
-    success? && tx_type == "payment"
+    success? && transaction_type == "payment"
   end
 
   def deferred?
-    success? && tx_type == "deferred"
+    success? && transaction_type == "deferred"
   end
 
   def authenticated?
-    complete? && ["authenticated", "registered"].include?(status) && tx_type == "authenticate"
+    complete? && ["authenticated", "registered"].include?(status) && transaction_type == "authenticate"
   end
 
   def failed?
