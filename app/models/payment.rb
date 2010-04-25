@@ -40,7 +40,7 @@ class Payment < ActiveRecord::Base
     )
     sage_pay_registration.delivery_address = delivery_address.to_sage_pay_address if delivery_address.present?
 
-    self.response = sage_pay_registration.register!
+    self.response = sage_pay_registration.run!
     if response.ok?
       build_sage_pay_transaction(
         :transaction_type      => sage_pay_registration.tx_type.to_s,
@@ -55,6 +55,32 @@ class Payment < ActiveRecord::Base
     else
       nil
     end
+  end
+
+  def release
+     if deferred?
+       sage_pay_release = SagePay::Server.release(
+          :vendor_tx_code => sage_pay_transaction.our_transaction_code,
+          :vps_tx_id      => sage_pay_transaction.sage_transaction_code,
+          :security_key   => sage_pay_transaction.security_key,
+          :tx_auth_no     => sage_pay_transaction.authorisation_code,
+          :release_amount => amount
+       )
+
+       self.response = sage_pay_release.run!
+       if response.ok?
+         build_sage_pay_transaction(
+           :transaction_type      => sage_pay_registration.tx_type.to_s,
+           :vendor                => sage_pay_registration.vendor,
+           :our_transaction_code  => sage_pay_registration.vendor_tx_code,
+           :security_key          => response.security_key,
+           :sage_transaction_code => response.vps_tx_id
+         )
+         sage_pay_transaction.save
+       else
+         false
+       end
+     end
   end
 
   def started?
