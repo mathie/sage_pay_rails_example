@@ -43,7 +43,7 @@ class Payment < ActiveRecord::Base
     self.response = sage_pay_registration.register!
     if response.ok?
       build_sage_pay_transaction(
-        :transaction_type      => sage_pay_registration.tx_type,
+        :transaction_type      => sage_pay_registration.tx_type.to_s,
         :vendor                => sage_pay_registration.vendor,
         :our_transaction_code  => sage_pay_registration.vendor_tx_code,
         :security_key          => response.security_key,
