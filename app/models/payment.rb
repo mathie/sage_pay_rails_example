@@ -70,8 +70,8 @@ class Payment < ActiveRecord::Base
       self.response = sage_pay_release.run!
       if response.ok?
         sage_pay_transactions.create!(
-          :status           => "released"
-          :transaction_type => sage_pay_release.tx_type.to_s,
+          :status           => "released",
+          :transaction_type => sage_pay_release.tx_type.to_s
         )
       else
         false
@@ -91,8 +91,8 @@ class Payment < ActiveRecord::Base
       self.response = sage_pay_abort.run!
       if response.ok?
         sage_pay_transactions.create!(
-          :status           => "aborted"
-          :transaction_type => sage_pay_abort.tx_type.to_s,
+          :status           => "aborted",
+          :transaction_type => sage_pay_abort.tx_type.to_s
         )
       else
         false
