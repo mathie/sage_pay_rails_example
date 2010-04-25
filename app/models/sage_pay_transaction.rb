@@ -6,7 +6,7 @@ class SagePayTransaction < ActiveRecord::Base
   def self.record_notification_from_params(params)
     sage_pay_transaction = nil
     notification = SagePay::Server::TransactionNotification.from_params(params) do |attributes|
-      sage_pay_transaction = find(:first, :conditions => { :our_transaction_code => vendor_tx_code, :sage_transaction_code => vps_tx_id })
+      sage_pay_transaction = find(:first, :conditions => { :our_transaction_code => attributes[:vendor_tx_code], :sage_transaction_code => attributes[:vps_tx_id] })
       SagePay::Server::SignatureVerificationDetails.new(sage_pay_transaction.vendor, sage_pay_transaction.security_key) if sage_pay_transaction.present?
     end
 
