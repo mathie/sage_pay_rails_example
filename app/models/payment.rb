@@ -13,16 +13,38 @@ class Payment < ActiveRecord::Base
   validates_length_of :description, :maximum => 100, :allow_blank => true
   validates_numericality_of :amount, :greater_than_or_equal_to => 0.01, :less_than_or_equal_to => 100_000, :allow_blank => true
 
-  def register
+
+  def pay
+    register(:payment)
+  end
+
+  def defer
+    register(:deferred)
+  end
+
+  def authenticate
+    register(:authenticate)
+  end
+
+  def register(tx_type)
     if complete? || in_progress?
       raise RuntimeError, "Sage Pay transaction has already been registered for this payment!"
     end
 
-    self.response = sage_pay_payment.register!
+    sage_pay_registration = SagePay::Server.registration(
+      :tx_type => tx_type,
+      :description => description,
+      :currency => currency.iso_code,
+      :amount => amount,
+      :billing_address => billing_address.to_sage_pay_address
+    )
+    sage_pay_registration.delivery_address = delivery_address.to_sage_pay_address if delivery_address.present?
+
+    self.response = sage_pay_registration.register!
     if response.ok?
       create_sage_pay_transaction(
-        :vendor                => sage_pay_payment.vendor,
-        :our_transaction_code  => sage_pay_payment.vendor_tx_code,
+        :vendor                => sage_pay_registration.vendor,
+        :our_transaction_code  => sage_pay_registration.vendor_tx_code,
         :security_key          => response.security_key,
         :sage_transaction_code => response.vps_tx_id
       )
@@ -31,20 +53,6 @@ class Payment < ActiveRecord::Base
     else
       nil
     end
-  end
-
-  def sage_pay_payment
-    if @sage_pay_payment.nil?
-      @sage_pay_payment = SagePay::Server.payment(
-        :description => description,
-        :currency => currency.iso_code,
-        :amount => amount,
-        :billing_address => billing_address.to_sage_pay_address
-      )
-
-      @sage_pay_payment.delivery_address = delivery_address.to_sage_pay_address if delivery_address.present?
-    end
-    @sage_pay_payment
   end
 
   def complete?
