@@ -5,7 +5,7 @@ class SagePayTransaction < ActiveRecord::Base
 
   validates_presence_of :vendor, :security_key, :payment_id, :our_transaction_code, :sage_transaction_code
 
-  validates_presence_of :authorisation_code, :avs_cv2_matched, :address_matched, :post_code_matched, :cv2_matched, :gift_aid, :threed_secure_ok, :card_type, :last_4_digits, :if => :success?
+  validates_presence_of :authorisation_code, :card_type, :last_4_digits, :if => :success?
 
   def self.record_notification_from_params(params)
     sage_pay_transaction = nil
