@@ -15,3 +15,5 @@ SagePay::Server.default_registration_options[:notification_url] = "https://sage-
 # production) but we're pushing everything through the simulator as it's an
 # example application.
 SagePay::Server.default_registration_options[:mode] = :simulator
+
+UUID.state_file = File.join(Rails.root, 'tmp', 'cache', 'ruby-uuid')
