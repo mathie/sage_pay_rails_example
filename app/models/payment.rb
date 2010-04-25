@@ -135,7 +135,7 @@ class Payment < ActiveRecord::Base
           :sage_transaction_code => response.vps_tx_id,
           :authorisation_code    => response.tx_auth_no,
           :security_key          => response.security_key,
-          :our_transaction_code  => sage_pay_authorise.our_transaction_code,
+          :our_transaction_code  => sage_pay_authorise.our_transaction_code
         )
       else
         false
