@@ -2,5 +2,6 @@ sage_pay            --version 0.2.1
 inherited_resources --version 1.0.6
 haml
 formtastic
+validation_reflection
 compass
 show_for            --version 0.1.3
