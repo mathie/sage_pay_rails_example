@@ -17,6 +17,9 @@
       %p Same as the billing address
 
 - if resource.sage_pay_transaction.present?
+
+  %h2 Sage Pay Transaction details
+
   - show_for resource.sage_pay_transaction do |s|
     = s.attribute :our_transaction_code
     = s.attribute :sage_transaction_code
@@ -28,8 +31,8 @@
     = s.attribute :cv2_matched?
     = s.attribute :gift_aid?
     = s.attribute :threed_secure_ok?
-    = s.attribute :card_type?
-    = s.attribute :last_4_digits?
+    = s.attribute :card_type
+    = s.attribute :last_4_digits
 
 %ul
   - if !resource.complete?
