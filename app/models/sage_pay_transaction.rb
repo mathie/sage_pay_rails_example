@@ -45,7 +45,7 @@ class SagePayTransaction < ActiveRecord::Base
   end
 
   def to_related_transaction
-    SagePay::Server.related_transaction.new(
+    SagePay::Server.related_transaction(
       :vps_tx_id      => sage_transaction_code,
       :vendor_tx_code => our_transaction_code,
       :security_key   => security_key,
