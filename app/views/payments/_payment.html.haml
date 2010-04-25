@@ -5,10 +5,15 @@
   %td=h formatted_amount(payment)
   %td
     - if payment.complete?
-      Complete, authorisation code #{payment.sage_pay_transaction.authorisation_code}
+      - if payment.paid?
+        Complete, authorisation code #{payment.sage_pay_transaction.authorisation_code}
+      - elsif payment.authenticated?
+        Authenticated, authorisation code #{payment.sage_pay_transaction.authorisation_code}
+      - elsif payment.deferred?
+        Deferred, authorisation code #{payment.sage_pay_transaction.authorisation_code}
+      - else
+        Failed!
     - elsif payment.in_progress?
       In progress
     - else
-      - if payment.failed?
-        Failed!
       = link_to 'Make payment', payment_sage_pay_transaction_path(payment), :method => :post

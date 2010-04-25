@@ -42,13 +42,14 @@ class Payment < ActiveRecord::Base
 
     self.response = sage_pay_registration.register!
     if response.ok?
-      create_sage_pay_transaction(
+      build_sage_pay_transaction(
         :transaction_type      => sage_pay_registration.tx_type,
         :vendor                => sage_pay_registration.vendor,
         :our_transaction_code  => sage_pay_registration.vendor_tx_code,
         :security_key          => response.security_key,
         :sage_transaction_code => response.vps_tx_id
       )
+      sage_pay_transaction.save!
 
       response.next_url
     else
@@ -56,20 +57,32 @@ class Payment < ActiveRecord::Base
     end
   end
 
+  def started?
+    sage_pay_transaction.present?
+  end
+
   def complete?
-    sage_pay_transaction.present? && sage_pay_transaction.success?
+    started? && sage_pay_transaction.complete?
+  end
+
+  def paid?
+    complete? && sage_pay_transaction.paid?
+  end
+
+  def deferred?
+    complete? && sage_pay_transaction.deferred?
   end
 
   def authenticated?
-    sage_pay_transaction.present? && sage_pay_transaction.authenticated?
+    complete? && sage_pay_transaction.authenticated?
   end
 
   def failed?
-    sage_pay_transaction.present? && !sage_pay_transaction.success?
+    complete? && sage_pay_transaction.failed?
   end
 
   def in_progress?
-    sage_pay_transaction.present? && !sage_pay_transaction.complete?
+    started? && !complete?
   end
 
   def transaction_code
