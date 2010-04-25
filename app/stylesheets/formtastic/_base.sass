@@ -45,21 +45,20 @@ form.formtastic
   fieldset
     display: inline-block
 
-    &.inputs
-    &.buttons
+    &.inputs, &.buttons
       padding-left: 25%
 
     ol
-    &.buttons li
-      float: left
-      padding-right: 0.5em
+      &.buttons li
+        float: left
+        padding-right: 0.5em
 
-    &:after
-      content: "."
-      display: block
-      height: 0
-      clear: both
-      visibility: hidden
+      &:after
+        content: "."
+        display: block
+        height: 0
+        clear: both
+        visibility: hidden
 
 
 html[xmlns] form.formtastic fieldset
@@ -93,11 +92,11 @@ html[xmlns] form.formtastic fieldset > ol > li
 form.formtastic fieldset
   > ol > li
     &.required, &.optional, &.error
-    label
-      display: block
-      width: 25%
-      float: left
-      padding-top: .2em
+      label
+        display: block
+        width: 25%
+        float: left
+        padding-top: .2em
 
     > li label
       line-height: 100%
