@@ -1,8 +1,8 @@
 class CreateSagePayTransactions < ActiveRecord::Migration
   def self.up
     create_table :sage_pay_transactions do |t|
-      t.string     :vendor,         :null => false
-      t.string     :security_key,   :null => false
+      t.string     :vendor
+      t.string     :security_key
       t.references :payment,        :null => false
 
       t.timestamps

@@ -1,11 +1,11 @@
 class SagePayTransactionKeepsTransactionIds < ActiveRecord::Migration
   def self.up
     change_table :sage_pay_transactions do |t|
-      t.string :our_transaction_code,  :null => false
-      t.string :sage_transaction_code, :null => false
+      t.string :our_transaction_code
+      t.string :sage_transaction_code
     end
-    add_index :sage_pay_transactions, :our_transaction_code,  :unique => true
-    add_index :sage_pay_transactions, :sage_transaction_code, :unique => true
+    add_index :sage_pay_transactions, :our_transaction_code
+    add_index :sage_pay_transactions, :sage_transaction_code
   end
 
   def self.down

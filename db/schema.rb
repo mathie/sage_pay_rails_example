@@ -61,13 +61,13 @@ ActiveRecord::Schema.define(:version => 20100425145922) do
   add_index "payments", ["currency_id"], :name => "index_payments_on_currency_id"
 
   create_table "sage_pay_transactions", :force => true do |t|
-    t.string   "vendor",                                       :null => false
-    t.string   "security_key",                                 :null => false
+    t.string   "vendor"
+    t.string   "security_key"
     t.integer  "payment_id",                                   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "our_transaction_code",                         :null => false
-    t.string   "sage_transaction_code",                        :null => false
+    t.string   "our_transaction_code"
+    t.string   "sage_transaction_code"
     t.string   "status"
     t.string   "authorisation_code"
     t.boolean  "avs_cv2_matched"
@@ -81,8 +81,8 @@ ActiveRecord::Schema.define(:version => 20100425145922) do
     t.string   "transaction_type",      :default => "payment", :null => false
   end
 
-  add_index "sage_pay_transactions", ["our_transaction_code"], :name => "index_sage_pay_transactions_on_our_transaction_code", :unique => true
+  add_index "sage_pay_transactions", ["our_transaction_code"], :name => "index_sage_pay_transactions_on_our_transaction_code"
   add_index "sage_pay_transactions", ["payment_id"], :name => "index_sage_pay_transactions_on_payment_id"
-  add_index "sage_pay_transactions", ["sage_transaction_code"], :name => "index_sage_pay_transactions_on_sage_transaction_code", :unique => true
+  add_index "sage_pay_transactions", ["sage_transaction_code"], :name => "index_sage_pay_transactions_on_sage_transaction_code"
 
 end
