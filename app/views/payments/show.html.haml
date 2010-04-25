@@ -34,13 +34,13 @@
     - elsif resource.released?
       Deferred payment has been released. Full payment made.
       = link_to 'Refund', refund_payment_path(resource), :method => :put
-    - elsif resource.authenticated?
-      Card authenticated. #{link_to "Authorise card", authorise_payment_path(resource), :method => :put}
     - elsif resource.authorised?
       Card authorised.
       = link_to "Repeat transaction", repeat_payment_path(resource), :method => :put
       or
       = link_to "re-authorise", authorise_payment_path(resource), :method => :put
+    - elsif resource.authenticated?
+      Card authenticated. #{link_to "Authorise card", authorise_payment_path(resource), :method => :put}
     - elsif resource.failed?
       Payment failed.
   - else
