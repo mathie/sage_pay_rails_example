@@ -16,8 +16,27 @@
     - else
       %p Same as the billing address
 
+- if resource.sage_pay_transaction.present?
+  - show_for resource.sage_pay_transaction do |s|
+    = s.attribute :our_transaction_code
+    = s.attribute :sage_transaction_code
+    = s.attribute :status
+    = s.attribute :authorisation_code
+    = s.attribute :avs_cv2_matched?
+    = s.attribute :address_matched?
+    = s.attribute :post_code_matched?
+    = s.attribute :cv2_matched?
+    = s.attribute :gift_aid?
+    = s.attribute :threed_secure_ok?
+    = s.attribute :card_type?
+    = s.attribute :last_4_digits?
+
 %ul
-  %li= link_to 'Make payment', payment_sage_pay_transaction_path(resource), :method => :post
-  %li= link_to 'edit details', edit_resource_path
+  - if !resource.complete?
+    - if resource.in_progress?
+      %li Payment in progress...
+    - else
+      %li= link_to 'Make payment', payment_sage_pay_transaction_path(resource), :method => :post
+    %li= link_to 'edit details', edit_resource_path
   %li= link_to 'all payments', collection_path
   %li= link_to 'delete', resource_path, :method => :delete

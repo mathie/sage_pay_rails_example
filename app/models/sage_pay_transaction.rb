@@ -37,4 +37,12 @@ class SagePayTransaction < ActiveRecord::Base
       :last_4_digits      => notification.last_4_digits
     )
   end
+
+  def success?
+    status == "ok"
+  end
+
+  def complete?
+    status.present?
+  end
 end

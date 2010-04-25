@@ -46,4 +46,12 @@ class Payment < ActiveRecord::Base
     end
     @sage_pay_payment
   end
+
+  def complete?
+    sage_pay_transaction.present? && sage_pay_transaction.success?
+  end
+
+  def in_progress?
+    sage_pay_transaction.present? && !sage_pay_transaction.complete?
+  end
 end
