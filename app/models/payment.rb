@@ -119,7 +119,7 @@ class Payment < ActiveRecord::Base
   end
 
   def authorise
-    if authenticated?
+    if authenticated? || authorised?
       sage_pay_authorise = SagePay::Server.authorise(
         :amount              => amount,
         :description         => "Authorise: #{description}",
