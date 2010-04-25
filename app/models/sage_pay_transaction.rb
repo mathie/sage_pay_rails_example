@@ -25,7 +25,6 @@ class SagePayTransaction < ActiveRecord::Base
       :cv2_matched        => notification.cv2_matched?,
       :gift_aid           => notification.gift_aid,
       :threed_secure_ok   => notification.threed_secure_status_ok?,
-      :cavv               => notification.cavv,
       :card_type          => notification.card_type.to_s.humanize,
       :last_4_digits      => notification.last_4_digits
     )
