@@ -13,7 +13,7 @@ class SagePayTransactionsController < InheritedResources::Base
         parent.authenticate
       else
         flash[:error] = "Invalid transaction type"
-        redirect_to parent_path
+        redirect_to payment_path(parent)
         return false
     end
 

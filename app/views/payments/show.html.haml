@@ -43,7 +43,7 @@
   - else
     %li= link_to 'Make payment now', payment_sage_pay_transaction_path(resource, :tx_type => "payment"), :method => :post
     %li= link_to 'Defer payment', payment_sage_pay_transaction_path(resource, :tx_type => "deferred"), :method => :post
-    %li= link_to 'Authorise future payments', payment_sage_pay_transaction_path(resource, :tx_type => "authorise"), :method => :post
+    %li= link_to 'Authorise future payments', payment_sage_pay_transaction_path(resource, :tx_type => "authenticate"), :method => :post
     %li= link_to 'edit details', edit_resource_path
   %li= link_to 'all payments', collection_path
   %li= link_to 'delete', resource_path, :method => :delete
