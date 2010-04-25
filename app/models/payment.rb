@@ -4,7 +4,8 @@ class Payment < ActiveRecord::Base
   belongs_to :currency
   belongs_to :billing_address,  :class_name => "Address", :dependent => :destroy
   belongs_to :delivery_address, :class_name => "Address", :dependent => :destroy
-  has_one :sage_pay_transaction, :dependent => :destroy
+  has_many :sage_pay_transactions, :dependent => :destroy
+  has_one :latest_sage_pay_transaction, :class_name => "SagePayTransaction", :order => "created_at DESC"
 
   accepts_nested_attributes_for :billing_address
   accepts_nested_attributes_for :delivery_address, :reject_if => lambda { |attributes| attributes.all? { |k, v| v.blank? } }
@@ -42,14 +43,13 @@ class Payment < ActiveRecord::Base
 
     self.response = sage_pay_registration.run!
     if response.ok?
-      build_sage_pay_transaction(
+      sage_pay_transactions.create!(
         :transaction_type      => sage_pay_registration.tx_type.to_s,
         :vendor                => sage_pay_registration.vendor,
         :our_transaction_code  => sage_pay_registration.vendor_tx_code,
         :security_key          => response.security_key,
         :sage_transaction_code => response.vps_tx_id
       )
-      sage_pay_transaction.save!
 
       response.next_url
     else
@@ -60,16 +60,18 @@ class Payment < ActiveRecord::Base
   def release
     if deferred?
       sage_pay_release = SagePay::Server.release(
-         :vendor_tx_code => sage_pay_transaction.our_transaction_code,
-         :vps_tx_id      => sage_pay_transaction.sage_transaction_code,
-         :security_key   => sage_pay_transaction.security_key,
-         :tx_auth_no     => sage_pay_transaction.authorisation_code,
+         :vendor_tx_code => latest_sage_pay_transaction.our_transaction_code,
+         :vps_tx_id      => latest_sage_pay_transaction.sage_transaction_code,
+         :security_key   => latest_sage_pay_transaction.security_key,
+         :tx_auth_no     => latest_sage_pay_transaction.authorisation_code,
          :release_amount => amount
       )
 
       self.response = sage_pay_release.run!
       if response.ok?
-        sage_pay_transaction.update_attributes(:status => "released")
+        sage_pay_transactions.create!(
+          :status => "released"
+        )
       else
         false
       end
@@ -79,15 +81,17 @@ class Payment < ActiveRecord::Base
   def abort
     if deferred?
       sage_pay_abort = SagePay::Server.abort(
-         :vendor_tx_code => sage_pay_transaction.our_transaction_code,
-         :vps_tx_id      => sage_pay_transaction.sage_transaction_code,
-         :security_key   => sage_pay_transaction.security_key,
-         :tx_auth_no     => sage_pay_transaction.authorisation_code
+         :vendor_tx_code => latest_sage_pay_transaction.our_transaction_code,
+         :vps_tx_id      => latest_sage_pay_transaction.sage_transaction_code,
+         :security_key   => latest_sage_pay_transaction.security_key,
+         :tx_auth_no     => latest_sage_pay_transaction.authorisation_code
       )
 
       self.response = sage_pay_abort.run!
       if response.ok?
-        sage_pay_transaction.update_attributes(:status => "aborted")
+        sage_pay_transactions.create!(
+          :status => "aborted"
+        )
       else
         false
       end
@@ -100,14 +104,12 @@ class Payment < ActiveRecord::Base
         :amount              => amount,
         :currency            => currency.iso_code,
         :description         => "Refund: #{description}",
-        :related_transaction => sage_pay_transaction.to_related_transaction
+        :related_transaction => latest_sage_pay_transaction.to_related_transaction
       )
 
       self.response = sage_pay_refund.run!
       if response.ok?
-        # FIXME: We should be creating a separate sage_pay_transaction for the refund
-        # (and for every interaction with SagePay, come to think of it).
-        sage_pay_transaction.update_attributes(
+        sage_pay_transactions.create!(
           :status                => "refunded",
           :authorisation_code    => response.tx_auth_no,
           :sage_transaction_code => response.vps_tx_id
@@ -123,14 +125,12 @@ class Payment < ActiveRecord::Base
       sage_pay_authorise = SagePay::Server.authorise(
         :amount              => amount,
         :description         => "Authorise: #{description}",
-        :related_transaction => sage_pay_transaction.to_related_transaction
+        :related_transaction => latest_sage_pay_transaction.to_related_transaction
       )
 
-      # FIXME: We should be creating a separate sage_pay_transaction for the repeat transaction authorisation
-      # (and for every interaction with SagePay, come to think of it).
       self.response = sage_pay_authorise.run!
       if response.ok?
-        sage_pay_transaction.update_attributes(
+        sage_pay_transactions.create!(
           :status => "authorised",
           :sage_transaction_code => response.vps_tx_id,
           :authorisation_code    => response.tx_auth_no,
@@ -149,54 +149,66 @@ class Payment < ActiveRecord::Base
         :amount              => amount,
         :currency            => currency.iso_code,
         :description         => "Repeat: #{description}",
-        :related_transaction => sage_pay_transaction.to_related_transaction
+        :related_transaction => latest_sage_pay_transaction.to_related_transaction
       )
 
-      # FIXME: We should be creating a separate sage_pay_transaction for the repeat transaction
-      # (and for every interaction with SagePay, come to think of it).
       self.response = sage_pay_repeat.run!
-      response.ok?
+      if response.ok?
+        sage_pay_transactions.create!(
+          :status                => "repeated",
+          :our_transaction_code  => sage_pay_repeat.vendor_tx_code,
+          :sage_transaction_code => response.vps_tx_id,
+          :authorisation_code    => response.tx_auth_no,
+          :security_key          => response.security_key,
+          :avs_cv2_matched       => response.avs_cv2_matched?,
+          :address_matched       => response.address_matched?,
+          :post_code_matched     => response.post_code_matched?,
+          :cv2_matched           => response.cv2_matched?
+        )
+      else
+        false
+      end
     end
   end
 
   def started?
-    sage_pay_transaction.present?
+    latest_sage_pay_transaction.present?
   end
 
   def complete?
-    started? && sage_pay_transaction.complete?
+    started? && latest_sage_pay_transaction.complete?
   end
 
   def paid?
-    complete? && sage_pay_transaction.paid?
+    complete? && latest_sage_pay_transaction.paid?
   end
 
   def deferred?
-    complete? && sage_pay_transaction.deferred?
+    complete? && latest_sage_pay_transaction.deferred?
   end
 
   def released?
-    complete? && sage_pay_transaction.released?
+    complete? && latest_sage_pay_transaction.released?
   end
 
   def aborted?
-    complete? && sage_pay_transaction.aborted?
+    complete? && latest_sage_pay_transaction.aborted?
   end
 
   def refunded?
-    complete? && sage_pay_transaction.refunded?
+    complete? && latest_sage_pay_transaction.refunded?
   end
 
   def authenticated?
-    complete? && sage_pay_transaction.authenticated?
+    complete? && latest_sage_pay_transaction.authenticated?
   end
 
   def authorised?
-    complete? && sage_pay_transaction.authorised?
+    complete? && latest_sage_pay_transaction.authorised?
   end
 
   def failed?
-    complete? && sage_pay_transaction.failed?
+    complete? && latest_sage_pay_transaction.failed?
   end
 
   def in_progress?
@@ -204,6 +216,6 @@ class Payment < ActiveRecord::Base
   end
 
   def transaction_code
-    sage_pay_transaction.present? ? sage_pay_transaction.our_transaction_code : nil
+    latest_sage_pay_transaction.present? ? latest_sage_pay_transaction.our_transaction_code : nil
   end
 end
