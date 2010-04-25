@@ -25,7 +25,7 @@ class Hassle::Compiler
     expanded = File.expand_path(path)
     public_dir = File.join(File.expand_path(Dir.pwd), "public")
 
-    File.expand_path(compile_location(expanded.gsub(public_dir, ''), '..'))
+    File.expand_path(compile_location(expanded.gsub(public_dir, '')))
   end
 
   def compile_location(*subdirs)
@@ -33,16 +33,18 @@ class Hassle::Compiler
   end
 
   def normalize
-    template_location = options[:template_location]
-
-    if template_location.is_a?(Hash) || template_location.is_a?(Array)
-      options[:template_location] = template_location.to_a.map do |input, output|
-        [input, css_location(input)]
+    options[:template_location] =
+      if options[:hassle_location]
+        options[:hassle_location]
+      elsif options[:template_location].is_a?(Hash) || options[:template_location].is_a?(Array)
+        options[:hassle_location] = options[:template_location].to_a.map do |input, output|
+          [input, css_location(output)]
+        end
+      else
+        default_location = File.join(options[:css_location], "sass")
+        options[:hassle_location] =
+          {default_location => File.expand_path(css_location(default_location), '..')}
       end
-    else
-      default_location = File.join(options[:css_location], "sass")
-      options[:template_location] = {default_location => css_location(default_location)}
-    end
   end
 
   def prepare
