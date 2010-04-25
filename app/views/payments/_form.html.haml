@@ -1,4 +1,6 @@
 - semantic_form_for resource do |form|
+  = form.error_messages
+
   - form.inputs do
     = form.input :description
     = form.input :amount
