@@ -56,6 +56,10 @@ class SagePayTransaction < ActiveRecord::Base
     success? && transaction_type == "payment"
   end
 
+  def deferred?
+    success? && transaction_type == "deferred"
+  end
+
   def released?
     complete? && status == "released" && transaction_type == "deferred"
   end
