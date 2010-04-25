@@ -6,6 +6,8 @@ class Payment < ActiveRecord::Base
   belongs_to :delivery_address, :class_name => "Address", :dependent => :destroy
   has_many :sage_pay_transactions, :dependent => :destroy
   has_one :latest_sage_pay_transaction, :class_name => "SagePayTransaction", :order => "created_at DESC"
+  has_one :latest_authenticated_sage_pay_transaction, :class_name => "SagePayTransaction", :order => "created_at DESC", :conditions => { :status => 'authenticated', :transaction_type => 'authenticate' }
+  has_one :latest_authorised_sage_pay_transaction,    :class_name => "SagePayTransaction", :order => "created_at DESC", :conditions => { :status => 'authorised',    :transaction_type => 'authorise'    }
 
   accepts_nested_attributes_for :billing_address
   accepts_nested_attributes_for :delivery_address, :reject_if => lambda { |attributes| attributes.all? { |k, v| v.blank? } }
@@ -128,7 +130,7 @@ class Payment < ActiveRecord::Base
       sage_pay_authorise = SagePay::Server.authorise(
         :amount              => amount,
         :description         => "Authorise: #{description}",
-        :related_transaction => latest_sage_pay_transaction.to_related_transaction
+        :related_transaction => latest_authenticated_sage_pay_transaction.to_related_transaction
       )
 
       self.response = sage_pay_authorise.run!
@@ -153,7 +155,7 @@ class Payment < ActiveRecord::Base
         :amount              => amount,
         :currency            => currency.iso_code,
         :description         => "Repeat: #{description}",
-        :related_transaction => latest_sage_pay_transaction.to_related_transaction
+        :related_transaction => latest_authorised_sage_pay_transaction.to_related_transaction
       )
 
       self.response = sage_pay_repeat.run!
@@ -205,11 +207,11 @@ class Payment < ActiveRecord::Base
   end
 
   def authenticated?
-    complete? && latest_sage_pay_transaction.authenticated?
+    latest_authenticated_sage_pay_transaction.present?
   end
 
   def authorised?
-    complete? && latest_sage_pay_transaction.authorised?
+    latest_authorised_sage_pay_transaction.present?
   end
 
   def failed?
