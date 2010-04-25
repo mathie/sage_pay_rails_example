@@ -8,7 +8,7 @@ require File.join(File.dirname(__FILE__), 'boot')
 
 Rails::Initializer.run do |config|
   # Specify gems that this application depends on and have them installed with rake gems:install
-  config.gem 'sage_pay', :version => '0.2.8.2'
+  config.gem 'sage_pay', :version => '0.2.9'
 
   # Stuff to make the web UI a little less painful.
   config.gem 'inherited_resources', :version => '~>1.0.6' # The 1.0.x branch is the last with Rails 2.3.x support.

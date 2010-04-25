@@ -118,6 +118,22 @@ class Payment < ActiveRecord::Base
     end
   end
 
+  def repeat
+    if authenticated?
+      sage_pay_repeat = SagePay::Server.repeat(
+        :amount              => amount,
+        :currency            => currency.iso_code,
+        :description         => "Refund: #{description}",
+        :related_transaction => sage_pay_transaction.to_related_transaction
+      )
+
+      # FIXME: We should be creating a separate sage_pay_transaction for the repeat transaction
+      # (and for every interaction with SagePay, come to think of it).
+      self.response = sage_pay_repeat.run!
+      response.ok?
+    end
+  end
+
   def started?
     sage_pay_transaction.present?
   end

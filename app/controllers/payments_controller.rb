@@ -26,4 +26,13 @@ class PaymentsController < InheritedResources::Base
     end
     redirect_to resource
   end
+
+  def repeat
+    if resource.repeat
+      flash[:notice] = "Payment successfully repeated."
+    else
+      flash[:error] = "Payment failed to repeat: #{resource.response.status} - #{resource.response.status_detail}"
+    end
+    redirect_to resource
+  end
 end
