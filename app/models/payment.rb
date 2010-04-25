@@ -20,10 +20,11 @@ class Payment < ActiveRecord::Base
 
     self.response = sage_pay_payment.register!
     if response.ok?
-      svd = sage_pay_payment.signature_verification_details
       create_sage_pay_transaction(
-        :vendor         => svd.vendor,
-        :security_key   => svd.security_key
+        :vendor                => sage_pay_payment.vendor,
+        :our_transaction_code  => sage_pay_payment.vendor_tx_code,
+        :security_key          => response.security_key,
+        :sage_transaction_code => response.vps_tx_id
       )
 
       response.next_url

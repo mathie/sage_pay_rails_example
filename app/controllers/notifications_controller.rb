@@ -4,6 +4,6 @@ class NotificationsController < InheritedResources::Base
 
   def create
     response = SagePayTransaction.record_notification_from_params(params)
-    render :text => reponse.response
+    render :text => reponse.inspect
   end
 end
