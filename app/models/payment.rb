@@ -14,7 +14,7 @@ class Payment < ActiveRecord::Base
   validates_numericality_of :amount, :greater_than_or_equal_to => 0.01, :less_than_or_equal_to => 100_000, :allow_blank => true
 
   def register
-    if sage_pay_transaction.present?
+    if complete? || in_progress?
       raise RuntimeError, "Sage Pay transaction has already been registered for this payment!"
     end
 
@@ -49,6 +49,10 @@ class Payment < ActiveRecord::Base
 
   def complete?
     sage_pay_transaction.present? && sage_pay_transaction.success?
+  end
+
+  def failed?
+    sage_pay_transaction.present? && !sage_pay_transaction.success?
   end
 
   def in_progress?

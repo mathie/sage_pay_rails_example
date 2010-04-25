@@ -35,11 +35,10 @@
     = s.attribute :last_4_digits
 
 %ul
-  - if !resource.complete?
-    - if resource.in_progress?
-      %li Payment in progress...
-    - else
-      %li= link_to 'Make payment', payment_sage_pay_transaction_path(resource), :method => :post
+  - if resource.in_progress?
+    %li Payment in progress...
+  - else
+    %li= link_to 'Make payment', payment_sage_pay_transaction_path(resource), :method => :post
     %li= link_to 'edit details', edit_resource_path
   %li= link_to 'all payments', collection_path
   %li= link_to 'delete', resource_path, :method => :delete
