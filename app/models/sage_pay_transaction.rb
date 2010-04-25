@@ -86,7 +86,7 @@ class SagePayTransaction < ActiveRecord::Base
   end
 
   def authorised?
-    complete? && status == "authorised" && transaction_type == "authenticate"
+    complete? && status == "authorised" && transaction_type == "authorise"
   end
 
   def failed?
