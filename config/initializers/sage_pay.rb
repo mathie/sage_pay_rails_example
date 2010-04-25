@@ -5,10 +5,10 @@
 SagePay::Server.default_registration_options[:vendor] = "rubaidh"
 
 # Notification URL for pingbacks. Unfortunately, the URL helpers don't work in
-# here, or this would be +notification_url+. On the plus side, it's submitted
+# here, or this would be +notifications_url+. On the plus side, it's submitted
 # as a POST, so we can pretend they meant to deliver a RESTful :create action.
 # :)
-SagePay::Server.default_registration_options[:notification_url] = "https://sage-pay-rails-example.heroku.com/notification"
+SagePay::Server.default_registration_options[:notification_url] = "https://sage-pay-rails-example.heroku.com/notifications"
 
 # Set the mode globally. Normally, you'd probably want to have different
 # settings for different environments (eg :test in staging and :live in
