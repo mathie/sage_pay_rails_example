@@ -44,7 +44,7 @@
     - if resource.paid?
       Full payment made.
     - elsif resource.deferred?
-      Payment deferred. #{link_to 'Release payment', release_payment_path(resource), :method => :put}
+      Payment deferred. #{link_to 'Release', release_payment_path(resource), :method => :put} or #{link_to 'abort', abort_payment_path(resource), :method => :put} payment.
     - elsif resource.released?
       Deferred payment has been released. Full payment made.
     - elsif resource.authenticated?

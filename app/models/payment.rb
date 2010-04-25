@@ -76,6 +76,24 @@ class Payment < ActiveRecord::Base
      end
   end
 
+  def abort
+     if deferred?
+       sage_pay_abort = SagePay::Server.abort(
+          :vendor_tx_code => sage_pay_transaction.our_transaction_code,
+          :vps_tx_id      => sage_pay_transaction.sage_transaction_code,
+          :security_key   => sage_pay_transaction.security_key,
+          :tx_auth_no     => sage_pay_transaction.authorisation_code
+       )
+
+       self.response = sage_pay_abort.run!
+       if response.ok?
+         sage_pay_transaction.update_attributes(:status => "aborted")
+       else
+         false
+       end
+     end
+  end
+
   def started?
     sage_pay_transaction.present?
   end
@@ -94,6 +112,10 @@ class Payment < ActiveRecord::Base
 
   def released?
     complete? && sage_pay_transaction.released?
+  end
+
+  def aborted?
+    complete? && sage_pay_transaction.aborted?
   end
 
   def authenticated?

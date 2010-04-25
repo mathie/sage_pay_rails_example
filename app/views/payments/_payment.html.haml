@@ -11,7 +11,10 @@
         Authenticated
       - elsif payment.deferred?
         Deferred, authorisation code #{payment.sage_pay_transaction.authorisation_code}
-        = link_to 'Release payment', release_payment_path(payment), :method => :put
+        = link_to 'Release', release_payment_path(payment), :method => :put
+        or
+        = link_to 'abort', abort_payment_path(payment), :method => :put
+        payment.
       - else
         Failed!
     - elsif payment.in_progress?

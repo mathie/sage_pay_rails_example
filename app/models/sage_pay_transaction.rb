@@ -64,6 +64,10 @@ class SagePayTransaction < ActiveRecord::Base
     complete? && status == "released" && transaction_type == "deferred"
   end
 
+  def aborted?
+    complete? && status == "aborted" && transaction_type == "deferred"
+  end
+
   def authenticated?
     complete? && ["authenticated", "registered"].include?(status) && transaction_type == "authenticate"
   end
