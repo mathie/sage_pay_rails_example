@@ -37,8 +37,6 @@
     - elsif resource.authorised?
       Card authorised.
       = link_to "Repeat transaction", repeat_payment_path(resource), :method => :put
-      or
-      = link_to "re-authorise", authorise_payment_path(resource), :method => :put
     - elsif resource.authenticated?
       Card authenticated. #{link_to "Authorise card", authorise_payment_path(resource), :method => :put}
     - elsif resource.failed?
