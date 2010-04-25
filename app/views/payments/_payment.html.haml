@@ -6,7 +6,8 @@
   %td
     - if payment.complete?
       - if payment.paid?
-        Complete, authorisation code #{payment.sage_pay_transaction.authorisation_code}
+        Complete, authorisation code #{payment.sage_pay_transaction.authorisation_code}.
+        = link_to 'Refund', refund_payment_path(payment), :method => :put
       - elsif payment.authenticated?
         Authenticated
       - elsif payment.deferred?

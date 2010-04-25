@@ -58,40 +58,64 @@ class Payment < ActiveRecord::Base
   end
 
   def release
-     if deferred?
-       sage_pay_release = SagePay::Server.release(
-          :vendor_tx_code => sage_pay_transaction.our_transaction_code,
-          :vps_tx_id      => sage_pay_transaction.sage_transaction_code,
-          :security_key   => sage_pay_transaction.security_key,
-          :tx_auth_no     => sage_pay_transaction.authorisation_code,
-          :release_amount => amount
-       )
+    if deferred?
+      sage_pay_release = SagePay::Server.release(
+         :vendor_tx_code => sage_pay_transaction.our_transaction_code,
+         :vps_tx_id      => sage_pay_transaction.sage_transaction_code,
+         :security_key   => sage_pay_transaction.security_key,
+         :tx_auth_no     => sage_pay_transaction.authorisation_code,
+         :release_amount => amount
+      )
 
-       self.response = sage_pay_release.run!
-       if response.ok?
-         sage_pay_transaction.update_attributes(:status => "released")
-       else
-         false
-       end
-     end
+      self.response = sage_pay_release.run!
+      if response.ok?
+        sage_pay_transaction.update_attributes(:status => "released")
+      else
+        false
+      end
+    end
   end
 
   def abort
-     if deferred?
-       sage_pay_abort = SagePay::Server.abort(
-          :vendor_tx_code => sage_pay_transaction.our_transaction_code,
-          :vps_tx_id      => sage_pay_transaction.sage_transaction_code,
-          :security_key   => sage_pay_transaction.security_key,
-          :tx_auth_no     => sage_pay_transaction.authorisation_code
-       )
+    if deferred?
+      sage_pay_abort = SagePay::Server.abort(
+         :vendor_tx_code => sage_pay_transaction.our_transaction_code,
+         :vps_tx_id      => sage_pay_transaction.sage_transaction_code,
+         :security_key   => sage_pay_transaction.security_key,
+         :tx_auth_no     => sage_pay_transaction.authorisation_code
+      )
 
-       self.response = sage_pay_abort.run!
-       if response.ok?
-         sage_pay_transaction.update_attributes(:status => "aborted")
-       else
-         false
-       end
-     end
+      self.response = sage_pay_abort.run!
+      if response.ok?
+        sage_pay_transaction.update_attributes(:status => "aborted")
+      else
+        false
+      end
+    end
+  end
+
+  def refund
+    if paid? || released?
+      sage_pay_refund = SagePay::Server.refund(
+        :amount              => amount,
+        :currency            => currency.iso_code,
+        :description         => "Refund: #{description}",
+        :related_transaction => sage_pay_transaction.to_related_transaction
+      )
+
+      self.response = sage_pay_refund.run!
+      if response.ok?
+        # FIXME: We should be creating a separate sage_pay_transaction for the refund
+        # (and for every interaction with SagePay, come to think of it).
+        sage_pay_transaction.update_attributes(
+          :status                => "refunded",
+          :authorisation_code    => response.tx_auth_no,
+          :sage_transaction_code => response.vps_tx_id
+        )
+      else
+        false
+      end
+    end
   end
 
   def started?
@@ -116,6 +140,10 @@ class Payment < ActiveRecord::Base
 
   def aborted?
     complete? && sage_pay_transaction.aborted?
+  end
+
+  def refunded?
+    complete? && sage_pay_transaction.refunded?
   end
 
   def authenticated?

@@ -43,10 +43,12 @@
     %li Payment completed.
     - if resource.paid?
       Full payment made.
+      = link_to 'Refund', refund_payment_path(resource), :method => :put
     - elsif resource.deferred?
       Payment deferred. #{link_to 'Release', release_payment_path(resource), :method => :put} or #{link_to 'abort', abort_payment_path(resource), :method => :put} payment.
     - elsif resource.released?
       Deferred payment has been released. Full payment made.
+      = link_to 'Refund', refund_payment_path(resource), :method => :put
     - elsif resource.authenticated?
       Card authenticated.
       %ul

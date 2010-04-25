@@ -17,4 +17,13 @@ class PaymentsController < InheritedResources::Base
     end
     redirect_to resource
   end
+
+  def refund
+    if resource.refund
+      flash[:notice] = "Payment successfully refunded."
+    else
+      flash[:error] = "Payment failed to refund: #{resource.response.status} - #{resource.response.status_detail}"
+    end
+    redirect_to resource
+  end
 end

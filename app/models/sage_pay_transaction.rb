@@ -44,6 +44,15 @@ class SagePayTransaction < ActiveRecord::Base
     end
   end
 
+  def to_related_transaction
+    SagePay::Server.related_transaction.new(
+      :vps_tx_id      => sage_transaction_code,
+      :vendor_tx_code => our_transaction_code,
+      :security_key   => security_key,
+      :tx_auth_no     => authorisation_code
+    )
+  end
+
   def complete?
     status.present?
   end
@@ -66,6 +75,10 @@ class SagePayTransaction < ActiveRecord::Base
 
   def aborted?
     complete? && status == "aborted" && transaction_type == "deferred"
+  end
+
+  def refunded?
+    complete? && status == "refunded"
   end
 
   def authenticated?
