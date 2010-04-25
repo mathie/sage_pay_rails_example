@@ -14,5 +14,7 @@ Compass.configuration.http_javascripts_path = "/javascripts"
 # To enable relative paths to assets via compass helper functions. Uncomment:
 # Compass.configuration.relative_assets     = true
 
+Sass::Plugin.options[:never_update] = true
+
 Compass.configuration.environment = RAILS_ENV.to_sym
 Compass.configure_sass_plugin!
