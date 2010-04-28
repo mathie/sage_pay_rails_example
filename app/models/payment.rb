@@ -182,9 +182,9 @@ class Payment < ActiveRecord::Base
   def cancel
     if authorised?
       sage_pay_cancel = SagePay::Server.cancel(
-        :vps_tx_id      => latest_authorised_sage_pay_transaction.sage_transaction_code,
-        :vendor_tx_code => latest_authorised_sage_pay_transaction.our_transaction_code,
-        :security_key   => latest_authorised_sage_pay_transaction.security_key
+        :vps_tx_id      => latest_authenticated_sage_pay_transaction.sage_transaction_code,
+        :vendor_tx_code => latest_authenticated_sage_pay_transaction.our_transaction_code,
+        :security_key   => latest_authenticated_sage_pay_transaction.security_key
       )
 
       self.response = sage_pay_cancel.run!
