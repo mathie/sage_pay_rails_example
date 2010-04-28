@@ -235,7 +235,7 @@ class Payment < ActiveRecord::Base
     latest_authorised_sage_pay_transaction.present? && !cancelled?
   end
 
-  def cancelled
+  def cancelled?
     latest_cancelled_sage_pay_transaction.present?
   end
 
