@@ -16,4 +16,8 @@ SagePay::Server.default_registration_options[:notification_url] = "https://sage-
 # example application.
 SagePay::Server.default_registration_options[:mode] = :simulator
 
+# Set the profile. If you're using iframes, chances are you want to set
+# profile to :low.
+SagePay::Server.default_registration_options[:profile] = :low
+
 UUID.state_file = File.join(Rails.root, 'tmp', 'ruby-uuid')

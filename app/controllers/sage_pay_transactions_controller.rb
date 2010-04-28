@@ -2,6 +2,10 @@ class SagePayTransactionsController < InheritedResources::Base
   belongs_to :payment
   actions :create
 
+  def show
+    @next_url = session[:next_url]
+  end
+
   def create
     tx_type = params[:tx_type] || "payment"
     next_url = case tx_type
@@ -18,7 +22,8 @@ class SagePayTransactionsController < InheritedResources::Base
     end
 
     if next_url.present?
-      redirect_to next_url
+      session[:next_url] = next_url
+      redirect_to payment_sage_pay_transaction_path(parent)
     else
       flash[:error] = "There was a problem redirecting to SagePay for payment: #{parent.response.status} - #{parent.response.status_detail}"
       redirect_to parent_path
