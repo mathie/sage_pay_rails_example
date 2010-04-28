@@ -8,6 +8,7 @@ class Payment < ActiveRecord::Base
   has_one :latest_sage_pay_transaction, :class_name => "SagePayTransaction", :order => "created_at DESC"
   has_one :latest_authenticated_sage_pay_transaction, :class_name => "SagePayTransaction", :order => "created_at DESC", :conditions => { :status => 'authenticated', :transaction_type => 'authenticate' }
   has_one :latest_authorised_sage_pay_transaction,    :class_name => "SagePayTransaction", :order => "created_at DESC", :conditions => { :status => 'authorised',    :transaction_type => 'authorise'    }
+  has_one :latest_cancelled_sage_pay_transaction,     :class_name => "SagePayTransaction", :order => "created_at DESC", :conditions => { :status => 'cancelled',     :transaction_type => 'cancel'       }
 
   accepts_nested_attributes_for :billing_address
   accepts_nested_attributes_for :delivery_address, :reject_if => lambda { |attributes| attributes.all? { |k, v| v.blank? } }
@@ -178,6 +179,26 @@ class Payment < ActiveRecord::Base
     end
   end
 
+  def cancel
+    if authorised?
+      sage_pay_cancel = SagePay::Server.cancel(
+        :vps_tx_id      => latest_authorised_sage_pay_transaction.sage_transaction_code,
+        :vendor_tx_code => latest_authorised_sage_pay_transaction.our_transaction_code,
+        :security_key   => latest_authorised_sage_pay_transaction.security_key
+      )
+
+      self.response = sage_pay_cancel.run!
+      if response.ok?
+        sage_pay_transactions.create!(
+          :status                => "cancelled",
+          :transaction_type      => sage_pay_cancel.tx_type.to_s
+        )
+      else
+        false
+      end
+    end
+  end
+
   def started?
     latest_sage_pay_transaction.present?
   end
@@ -207,11 +228,15 @@ class Payment < ActiveRecord::Base
   end
 
   def authenticated?
-    latest_authenticated_sage_pay_transaction.present?
+    latest_authenticated_sage_pay_transaction.present? && !cancelled?
   end
 
   def authorised?
-    latest_authorised_sage_pay_transaction.present?
+    latest_authorised_sage_pay_transaction.present? && !cancelled?
+  end
+
+  def cancelled
+    latest_cancelled_sage_pay_transaction.present?
   end
 
   def failed?
