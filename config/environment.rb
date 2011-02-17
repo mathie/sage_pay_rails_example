@@ -14,7 +14,7 @@ Rails::Initializer.run do |config|
   config.gem 'inherited_resources', :version => '~>1.0.6' # The 1.0.x branch is the last with Rails 2.3.x support.
   config.gem 'haml'
   config.gem 'formtastic'
-  config.gem 'validation_reflection'
+  config.gem 'validation_reflection', :version => '0.3.7'
   config.gem 'compass'
   config.gem 'show_for', :version => '~>0.1.3'
 
