@@ -37,9 +37,9 @@ Then you need to:
  Provides all standard rest actions in controlers by default.
  It also provides the following helpers in views:
 
- resource        #=> @project
- collection      #=> @projects
- resource_class  #=> Project
+ resource        #=> @project  
+ collection      #=> @projects  
+ resource_class  #=> Project  
  
  Please note inherited_resources has it's own dependancies.
  
