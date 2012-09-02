@@ -17,36 +17,36 @@ Then you need to:
  4. edit config/initializers/sage_pay.rb - adding your vendor ID and update the notification_url
  5. Ensure the appropriate gems are installed.
  
- That should be it!
+That should be it!
  
- ---
+---
  
  If you are interested in using SagePay Direct then look at dooks' modifications
  here (version 0.2.12): 
  
  https://github.com/doooks/sage_pay_rails_example/commit/4a9524ac0fb8c72b0a797c83d94719107a38c537
  
- ---
+---
  
- # Notes
+# Notes
  
- If you want to use this example in your rails application then please note that it relies heavily on gems.  In particular:
+If you want to use this example in your rails application then please note that it relies heavily on gems.  In particular:
  
- ## [Inherited Resources](https://github.com/josevalim/inherited_resources)
+## [Inherited Resources](https://github.com/josevalim/inherited_resources)
  
- Provides all standard rest actions in controlers by default.
- It also provides the following helpers in views:
+Provides all standard rest actions in controlers by default.
+It also provides the following helpers in views:
 
- resource        #=> @project  
- collection      #=> @projects  
- resource_class  #=> Project  
+resource        #=> @project  
+collection      #=> @projects  
+resource_class  #=> Project  
  
- Please note inherited_resources has it's own dependancies.
+Please note inherited_resources has it's own dependancies.
  
- ## [show_for](https://github.com/plataformatec/show_for)
+## [show_for](https://github.com/plataformatec/show_for)
  
- Allows you to quickly show a model's information with I18n features
+Allows you to quickly show a model's information with I18n features
  
- ## [Validation Reflection](https://github.com/redinger/validation_reflection)
+## [Validation Reflection](https://github.com/redinger/validation_reflection)
  
- Adds reflective access to validations
+Adds reflective access to validations
