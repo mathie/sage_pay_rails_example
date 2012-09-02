@@ -32,7 +32,7 @@ Then you need to:
  
  If you want to use this example in your rails application then please note that it relies heavily on gems.  In particular:
  
- ## Inherited Resources
+ ## [Inherited Resources](https://github.com/josevalim/inherited_resources)
  
  Provides all standard rest actions in controlers by default.
  It also provides the following helpers in views:
@@ -43,10 +43,10 @@ Then you need to:
  
  Please note inherited_resources has it's own dependancies.
  
- ## show_for
+ ## [show_for](https://github.com/plataformatec/show_for)
  
  Allows you to quickly show a model's information with I18n features
  
- ## Validation Reflection
+ ## [Validation Reflection](https://github.com/redinger/validation_reflection)
  
  Adds reflective access to validations
