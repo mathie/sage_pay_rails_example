@@ -45,7 +45,7 @@ Then you need to:
  
  ## show_for
  
- Allows you to quickly show a model information with I18n features
+ Allows you to quickly show a model's information with I18n features
  
  ## Validation Reflection
  
