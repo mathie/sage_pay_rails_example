@@ -30,7 +30,10 @@ That should be it!
  
 # Notes
  
-If you want to use this example in your rails application then please note that it relies heavily on gems.  In particular:
+If you want to copy this example into your rails application then please note:
+
+ 1. Not everything works (e.g. Refunds);  
+ 2. It relies heavily on gems - in particular:
  
 ## [Inherited Resources](https://github.com/josevalim/inherited_resources)
  
