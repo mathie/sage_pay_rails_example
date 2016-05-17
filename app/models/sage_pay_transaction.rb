@@ -7,6 +7,10 @@ class SagePayTransaction < ActiveRecord::Base
 
 #  validates_presence_of :authorisation_code, :card_type, :last_4_digits, :if => :success?
 
+#The following is used to process the notification params returned from SagePay using the SagePay gem
+#The notification parameters are saved to the database table: Sage_Pay_Transactions
+#and returned as attributes in sage_pay_transaction
+#it also defines the attr notification
   def self.record_notification_from_params(params)
     sage_pay_transaction = nil
     notification = SagePay::Server::Notification.from_params(params) do |attributes|
@@ -19,10 +23,12 @@ class SagePayTransaction < ActiveRecord::Base
     sage_pay_transaction
   end
 
+# The following shortens notification.response(redirect_url)
   def response(redirect_url)
     notification.response(redirect_url) if notification.present?
   end
 
+#converts notification attributes to database friendly values and updates the database
   def update_attributes_from_notification!(notification)
     self.notification = notification
 
@@ -70,7 +76,7 @@ class SagePayTransaction < ActiveRecord::Base
   end
 
   def released?
-    complete? && status == "released" && transaction_type == "deferred"
+    complete? && status == "released" && transaction_type == "release"
   end
 
   def aborted?
